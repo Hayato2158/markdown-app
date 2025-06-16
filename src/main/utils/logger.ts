@@ -1,6 +1,6 @@
 import log from 'electron-log'
 import { format } from '@formkit/tempo'
-import { LOG_LEVEL, LOG_MASSAGE } from '../contents/enum'
+import { LOG_LEVEL, LOG_MESSAGE } from '../contents/enum'
 
 const formatDate = 'YYYY/MM/DD'
 const locale = 'Asia/Tokyo'
@@ -12,7 +12,7 @@ const locale = 'Asia/Tokyo'
  */
 export const logger = (
   level: (typeof LOG_LEVEL)[keyof typeof LOG_LEVEL],
-  logMessage: (typeof LOG_MASSAGE)[keyof typeof LOG_MASSAGE]
+  logMessage: (typeof LOG_MESSAGE)[keyof typeof LOG_MESSAGE]
 ): void => {
   setTransports()
   log[level](process.pid, logMessage)

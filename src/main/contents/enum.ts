@@ -18,7 +18,7 @@ export const DIALOG_TYPE = {
 export type DialogValue = (typeof DIALOG_TYPE)[keyof typeof DIALOG_TYPE]
 
 /** ログメッセージ */
-export const LOG_MASSAGE = {
+export const LOG_MESSAGE = {
   APP_START: 'アプリケーションが起動しました。',
   APP_FINISH: 'アプリケーションが閉じました。'
 }
