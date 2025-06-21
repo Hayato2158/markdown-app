@@ -4,6 +4,8 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { LOG_LEVEL, LOG_MESSAGE } from './contents/enum'
+import Database from '@main/database/index'
+
 
 /** composable */
 import { logger } from './utils/logger'
@@ -94,6 +96,11 @@ app.whenReady().then(() => {
   })
 })
 
+app.on('will-finish-launching', async (): Promise<void> => {
+  // DB接続
+  await Database.createConnection()
+})
+
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
@@ -103,6 +110,11 @@ app.on('window-all-closed', () => {
     logger(LOG_LEVEL.INFO, LOG_MESSAGE.APP_FINISH)
     app.quit()
   }
+})
+
+// DB接続の終了
+app.on('will-quit', (): void => {
+  Database.close()
 })
 
 const isTheLock = app.requestSingleInstanceLock()

@@ -25,14 +25,17 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@formkit/tempo": "^0.1.2",
     "electron-log": "^5.4.1",
-    "electron-updater": "^6.3.9"
+    "electron-updater": "^6.3.9",
+    "reflect-metadata": "^0.2.2",
+    "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.24"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
     "@electron-toolkit/eslint-config-ts": "^3.0.0",
     "@electron-toolkit/tsconfig": "^1.0.1",
     "@stylelint/postcss-css-in-js": "^0.38.0",
-    "@types/node": "^22.14.1",
+    "@types/node": "^22.15.32",
     "@types/react": "^19.1.1",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.3.4",
