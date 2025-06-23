@@ -7,7 +7,7 @@ import { NoteInfo } from '@renderer/contents/note'
 
 const getNotes = async (): Promise<NoteInfo[]> => {
   const response = await window.electron.getNotes()
-  if (response.success && response.data) {
+  if (response?.success && response.data) {
     return response.data.sort((a, b) => b.lastEditTime.getTime() - a.lastEditTime.getTime())
   }
   return []
@@ -32,7 +32,7 @@ const selectedNoteAtomAsync = atom(async (get) => {
   const selectedNote: NoteInfo = notes[index ?? 0]
   const response = await window.electron.readNote(selectedNote?.uuid)
 
-  if (response.success && response.data) {
+  if (response?.success && response.data) {
     return response.data
   }
 
