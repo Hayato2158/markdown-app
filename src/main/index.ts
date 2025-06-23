@@ -5,6 +5,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { LOG_LEVEL, LOG_MESSAGE } from './contents/enum'
 import Database from '@main/database/index'
+import 'reflect-metadata'
 
 
 /** composable */

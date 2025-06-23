@@ -1,33 +1,44 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+/** components */
+import {
+  RootLayout,
+  Sidebar,
+  Content,
+  TopBar,
+  ActionButtonsRow,
+  NoteList,
+  MarkdownEditor,
+  NoteTitle
+} from '@renderer/components/index'
 
-function App(): React.JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+/** jotai DevTools */
+import { createStore, Provider } from 'jotai'
+import { DevTools } from 'jotai-devtools'
+import 'jotai-devtools/styles.css'
 
+/** styles */
+import styles from '@renderer/styles/pages/app.module.scss'
+
+function App(): JSX.Element {
+  const customStore = createStore()
   return (
     <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
-      </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
-      <Versions></Versions>
+      <Provider store={customStore}>
+        <DevTools store={customStore} />
+        <TopBar />
+        <RootLayout className={styles.wrapper}>
+          {/* sidebar */}
+          <Sidebar className={styles.sidebar}>
+            <ActionButtonsRow className={styles.button} />
+            <NoteList />
+          </Sidebar>
+
+          {/* content */}
+          <Content className={styles.content}>
+            <NoteTitle />
+            <MarkdownEditor />
+          </Content>
+        </RootLayout>
+      </Provider>
     </>
   )
 }

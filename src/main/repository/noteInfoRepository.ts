@@ -50,3 +50,11 @@ export const deleteNoteInfo = async (uuid: string): Promise<DeleteResult> => {
     .where('uuid = :id', { id: uuid })
     .execute()
 }
+
+export const NoteInfoRepository = {
+  getNoteInfo,
+  readNotesInfo,
+  writeNoteInfo,
+  saveNoteInfo,
+  deleteNoteInfo
+}

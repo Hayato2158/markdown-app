@@ -22,7 +22,7 @@ import {
   WELCOME,
   DIALOG_CANCEL_ID,
   DIALOG_DEFAULT_ID,
-  INFO_MASSAGE
+  INFO_MESSAGE
 } from '@main/contents/enum'
 
 /** types */
@@ -39,7 +39,7 @@ ipcMain.handle('getNotes', async (): Promise<ReturnType<GetNote>> => {
   }
 
   if (!readNotes?.length) {
-    logger(LOG_LEVEL.INFO, INFO_MASSAGE.NO_NOTE_FOUND)
+    logger(LOG_LEVEL.INFO, INFO_MESSAGE.NO_NOTE_FOUND)
 
     const newNote: NoteInfo[] = [
       {
@@ -54,9 +54,9 @@ ipcMain.handle('getNotes', async (): Promise<ReturnType<GetNote>> => {
     if (saveNoteError) {
       logger(LOG_LEVEL.ERROR, `saveNoteInfo Error: ${saveNoteError}`)
     }
-    return newNote
+    return { success: true, data: newNote }
   }
-  return readNotes
+  return { success: true, data: readNotes }
 })
 
 /**
@@ -128,7 +128,7 @@ ipcMain.handle('deleteNote', async (_, filename: string, uuid: string): Promise<
   })
 
   if (response === DIALOG_CANCEL_ID) {
-    console.info(INFO_MASSAGE.NOTE_CANCELED)
+    console.info(INFO_MESSAGE.NOTE_CANCELED)
     return false
   }
 

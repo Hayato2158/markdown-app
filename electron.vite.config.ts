@@ -27,6 +27,13 @@ export default defineConfig({
         '@/mocks': resolve('src/renderer/src/mocks')
       }
     },
-    plugins: [react()]
+    plugins: [
+      react({
+      babel:{
+        presets:['jotai/babel/preset']
+      }
+    }
+
+    )]
   }
 })
