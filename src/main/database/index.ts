@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import { DataSource } from 'typeorm'
 import { ormconfig } from '@main/database/typeorm'
 

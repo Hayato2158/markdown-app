@@ -101,6 +101,7 @@ app.whenReady().then(() => {
 app.on('will-finish-launching', async (): Promise<void> => {
   // DB接続
   await Database.createConnection()
+  
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
