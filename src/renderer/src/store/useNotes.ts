@@ -1,8 +1,6 @@
+import { atom } from 'jotai'
 import { unwrap } from 'jotai/utils'
 import { v7 as uuidv7 } from 'uuid'
-import { atom } from 'jotai'
-
-/** tyes */
 import { NoteInfo } from '@renderer/contents/note'
 
 const getNotes = async (): Promise<NoteInfo[]> => {
@@ -18,80 +16,44 @@ export const notesAtom = unwrap(notesAtomAsync, (prev) => prev || [])
 
 export const selectedNoteIndexAtom = atom<number | null>(0)
 
-/**
- * note選択
- */
 const selectedNoteAtomAsync = atom(async (get) => {
-  const notes: NoteInfo[] = get(notesAtom)
-  const index = get(selectedNoteIndexAtom)
+  const notes = get(notesAtom)
+  const index = get(selectedNoteIndexAtom) ?? 0
 
-  if (!notes || notes.length === 0) {
-    return null
-  }
+  if (!notes?.length) return null
 
-  const selectedNote: NoteInfo = notes[index ?? 0]
-  const response = await window.electron.readNote(selectedNote?.uuid)
+  const selectedNote = notes[index]
+  const response = await window.electron.readNote(selectedNote.uuid)
 
-  if (response?.success && response.data) {
-    return response.data
-  }
-
-  return selectedNote
+  return (response?.success && response.data) ? response.data : selectedNote
 })
 
-export const selectedNoteAtom = unwrap(
-  selectedNoteAtomAsync,
-  (prev) =>
-    prev ?? {
-      uuid: uuidv7(),
-      title: '',
-      content: '',
-      lastEditTime: new Date()
-    }
+export const selectedNoteAtom = unwrap(selectedNoteAtomAsync, (prev) =>
+  prev ?? {
+    uuid: uuidv7(),
+    title: '',
+    content: '',
+    lastEditTime: new Date()
+  }
 )
 
-/**
- * noteの保存
- */
 export const saveNoteAtom = atom(null, (get, set) => {
   const notes = get(notesAtom)
   const selectedNote = get(selectedNoteAtom)
-
   if (!selectedNote || !notes) return
 
-  set(
-    notesAtom,
-    notes.map((note) => {
-      if (note.uuid === selectedNote.uuid) {
-        return {
-          ...note,
-          lastEditTime: new Date()
-        }
-      }
-
-      return note
-    })
-  )
+  set(notesAtom, notes.map((note) =>
+    note.uuid === selectedNote.uuid ? { ...note, lastEditTime: new Date() } : note
+  ))
 })
 
-/**
- * noteの新規作成
- */
 export const createNoteAtom = atom(null, async (get, set) => {
   const response = await window.electron.createNote('新規ノート')
   if (!response.success || !response.data) return
 
-  const refreshed = await window.electron.getNotes()
-  if (refreshed.success && refreshed.data) {
-    set(notesAtom, refreshed.data)
-    set(selectedNoteIndexAtom, 0)
-    console.log('[createNoteAtom] refreshed:', refreshed.data.length)
-  }
-});
+  set(refreshNotesAtom) // 一括更新で反映
+})
 
-/**
- * noteの削除
- */
 export const deleteNoteAtom = atom(null, async (get, set) => {
   const selectedNote = get(selectedNoteAtom)
   if (!selectedNote) return
@@ -99,9 +61,17 @@ export const deleteNoteAtom = atom(null, async (get, set) => {
   const success = await window.electron.deleteNote(selectedNote.title, selectedNote.uuid)
   if (!success) return
 
+  set(refreshNotesAtom) // 一括更新で反映
+})
+
+/**
+ * notes と selectedNoteIndex を一括更新
+ */
+export const refreshNotesAtom = atom(null, async (_get, set) => {
   const refreshed = await window.electron.getNotes()
   if (refreshed.success && refreshed.data) {
     set(notesAtom, refreshed.data)
     set(selectedNoteIndexAtom, 0)
+    console.log('[refreshNotesAtom] refreshed:', refreshed.data.length)
   }
 })

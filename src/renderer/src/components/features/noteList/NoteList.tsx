@@ -12,6 +12,7 @@ import { useNotesList } from '@renderer/hooks/index'
 /** types */
 import type { NoteInfo } from '@renderer/contents/note'
 
+
 type NoteListProps = ComponentPropsWithoutRef<'ul'> & {
   onSelect?: () => void
 }
@@ -19,7 +20,7 @@ type NoteListProps = ComponentPropsWithoutRef<'ul'> & {
 export const NoteList = ({ onSelect, ...props }: NoteListProps) => {
   const { notes, selectedIndex, handleNoteSelect } = useNotesList({ onSelect })
 
-  console.log('[NoteList] rendering notes:', notes.length)
+  // console.log('[NoteList] rendering notes:', notes.length)
 
   if (!notes?.length) {
     return (
