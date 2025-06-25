@@ -16,14 +16,8 @@ import { NoteInfo } from '@renderer/contents/note'
 export const NewNoteButton = ({ ...props }: ActionButtonProps) => {
   const createNote = useSetAtom(createNoteAtom)
 
-  const handleAddNote = async (): Promise<void> => {
-    const response = await window.electron.createNote('新規ノート')
-    if (!response.success || !response.data) {
-      return
-    }
-
-    const newNote: NoteInfo = response.data
-    createNote(newNote)
+  const handleAddNote = (): void => {
+    createNote()
   }
 
   return (

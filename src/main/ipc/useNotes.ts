@@ -142,3 +142,4 @@ ipcMain.handle('deleteNote', async (_, filename: string, uuid: string): Promise<
 
   return true
 })
+

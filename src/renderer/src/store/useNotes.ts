@@ -77,30 +77,31 @@ export const saveNoteAtom = atom(null, (get, set) => {
 /**
  * noteの新規作成
  */
-export const createNoteAtom = atom(null, async (get, set, newNote: NoteInfo) => {
-  const notes = get(notesAtom)
-  if (!notes) {
-    return
-  }
+export const createNoteAtom = atom(null, async (get, set) => {
+  const response = await window.electron.createNote('新規ノート')
+  if (!response.success || !response.data) return
 
-  set(notesAtom, [newNote, ...notes.filter((note) => note.uuid !== newNote.uuid)])
-  set(selectedNoteIndexAtom, 0)
-})
+  const refreshed = await window.electron.getNotes()
+  if (refreshed.success && refreshed.data) {
+    set(notesAtom, refreshed.data)
+    set(selectedNoteIndexAtom, 0)
+    console.log('[createNoteAtom] refreshed:', refreshed.data.length)
+  }
+});
 
 /**
  * noteの削除
  */
 export const deleteNoteAtom = atom(null, async (get, set) => {
-  const notes = get(notesAtom)
   const selectedNote = get(selectedNoteAtom)
+  if (!selectedNote) return
 
-  if (!notes || !selectedNote) {
-    return
+  const success = await window.electron.deleteNote(selectedNote.title, selectedNote.uuid)
+  if (!success) return
+
+  const refreshed = await window.electron.getNotes()
+  if (refreshed.success && refreshed.data) {
+    set(notesAtom, refreshed.data)
+    set(selectedNoteIndexAtom, 0)
   }
-
-  set(
-    notesAtom,
-    notes.filter((note) => note.uuid !== selectedNote.uuid)
-  )
-  set(selectedNoteIndexAtom, 0)
 })
