@@ -4,7 +4,8 @@ import delete_icon from '@renderer/assets/delete_icon.svg'
 import { useAtomValue, useSetAtom } from 'jotai'
 
 /** store */
-import { deleteNoteAtom, selectedNoteAtom } from '@renderer/store/useNotes'
+import { deleteNoteAtom, selectedNoteAtom, refreshNotesAtom } from '@renderer/store/useNotes'
+
 
 /** scss */
 import style from '@renderer/styles/features/button/deleteNoteButton.module.scss'
@@ -12,6 +13,8 @@ import style from '@renderer/styles/features/button/deleteNoteButton.module.scss
 export const DeleteNoteButton = ({ ...props }: ActionButtonProps) => {
   const deleteNote = useSetAtom(deleteNoteAtom)
   const selectedNote = useAtomValue(selectedNoteAtom)
+  const refreshNotes = useSetAtom(refreshNotesAtom)
+
 
   const handleDelete = async (): Promise<void> => {
     if (!selectedNote) {
@@ -26,7 +29,8 @@ export const DeleteNoteButton = ({ ...props }: ActionButtonProps) => {
       return
     }
 
-    deleteNote()
+    await deleteNote()
+    await refreshNotes()
   }
 
   return (

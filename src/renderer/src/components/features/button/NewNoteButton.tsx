@@ -18,6 +18,7 @@ export const NewNoteButton = ({ ...props }: ActionButtonProps) => {
 
   const handleAddNote = (): void => {
     createNote()
+    window.location.reload()
   }
 
   return (
