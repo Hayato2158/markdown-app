@@ -58,8 +58,8 @@ export const deleteNoteAtom = atom(null, async (get, set) => {
   const selectedNote = get(selectedNoteAtom)
   if (!selectedNote) return
 
-  const success = await window.electron.deleteNote(selectedNote.title, selectedNote.uuid)
-  if (!success) return
+  const response = await window.electron.deleteNote(selectedNote.title, selectedNote.uuid)
+  if (!response.success) return
 
   set(refreshNotesAtom) // 一括更新で反映
 })

@@ -4,7 +4,7 @@ import { useSetAtom } from 'jotai'
 import { ActionButton, ActionButtonProps } from '@renderer/components/features/button/ActionButton'
 
 /** store */
-import { createNoteAtom } from '@renderer/store/useNotes'
+import { createNoteAtom, refreshNotesAtom } from '@renderer/store/useNotes'
 
 /** scss */
 import style from '@renderer/styles/features/button/newNoteButton.module.scss'
@@ -15,10 +15,11 @@ import { NoteInfo } from '@renderer/contents/note'
 
 export const NewNoteButton = ({ ...props }: ActionButtonProps) => {
   const createNote = useSetAtom(createNoteAtom)
+  const refreshNotes = useSetAtom(refreshNotesAtom)
 
-  const handleAddNote = (): void => {
-    createNote()
-    window.location.reload()
+  const handleAddNote = async (): Promise<void> => {
+    await createNote()
+    await refreshNotes()
   }
 
   return (

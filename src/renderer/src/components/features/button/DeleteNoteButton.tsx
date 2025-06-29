@@ -17,18 +17,6 @@ export const DeleteNoteButton = ({ ...props }: ActionButtonProps) => {
 
 
   const handleDelete = async (): Promise<void> => {
-    if (!selectedNote) {
-      return
-    }
-    const response = await window.electron.deleteNote(
-      selectedNote.title,
-      selectedNote.uuid
-    )
-
-    if (!response.success) {
-      return
-    }
-
     await deleteNote()
     await refreshNotes()
   }

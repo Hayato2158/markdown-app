@@ -26,7 +26,7 @@ import {
 } from '@main/contents/enum'
 
 /** types */
-import { GetNote, NoteContent, NoteInfo } from '@main/contents/ipc'
+import { GetNote, NoteContent, NoteInfo, ApiResponse } from '@main/contents/ipc'
 
 /**
  * 全ファイルの取得
@@ -117,7 +117,7 @@ ipcMain.handle(
 /**
  * ファイル削除
  */
-ipcMain.handle('deleteNote', async (_, filename: string, uuid: string): Promise<boolean> => {
+ipcMain.handle('deleteNote', async (_, filename: string, uuid: string): Promise<ApiResponse<void>> => {
   const { response } = await dialog.showMessageBox({
     type: DIALOG_TYPE.WARNING as DialogValue,
     title: 'ノート削除',
@@ -129,17 +129,17 @@ ipcMain.handle('deleteNote', async (_, filename: string, uuid: string): Promise<
 
   if (response === DIALOG_CANCEL_ID) {
     console.info(INFO_MESSAGE.NOTE_CANCELED)
-    return false
+    return { success: false, error: 'User cancelled deletion' }
   }
 
   const [__, deleteFileError] = await handleError(deleteNoteInfo(uuid))
 
   if (deleteFileError) {
     logger(LOG_LEVEL.ERROR, `DeleteNote Error: ${deleteFileError}`)
-    return false
+    return { success: false, error: 'Failed to delete note' }
   }
   logger(LOG_LEVEL.INFO, `Deleting note: ${filename}`)
 
-  return true
+  return { success: true }
 })
 
