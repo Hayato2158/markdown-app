@@ -5,8 +5,7 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-image: url('./wavy-lines.svg');
-  background-size: cover;
+  background: #ffffff;
   user-select: none;
 }
 
@@ -14,7 +13,8 @@ code {
   font-weight: 600;
   padding: 3px 5px;
   border-radius: 2px;
-  background-color: var(--color-background-mute);
+  background-color: #f2f2f2;
+  color: #1b1b1f;
   font-family:
     ui-monospace,
     SFMono-Regular,
@@ -50,14 +50,14 @@ code {
 .creator {
   font-size: 14px;
   line-height: 16px;
-  color: var(--ev-c-text-2);
+  color: #1b1b1f;
   font-weight: 600;
   margin-bottom: 10px;
 }
 
 .text {
   font-size: 28px;
-  color: var(--ev-c-text-1);
+  color: #1b1b1f;
   font-weight: 700;
   line-height: 32px;
   text-align: center;
@@ -68,7 +68,7 @@ code {
 .tip {
   font-size: 16px;
   line-height: 24px;
-  color: var(--ev-c-text-2);
+  color: #595959;
   font-weight: 600;
 }
 
@@ -113,15 +113,15 @@ code {
   padding: 0 20px;
   line-height: 38px;
   font-size: 14px;
-  border-color: var(--ev-button-alt-border);
-  color: var(--ev-button-alt-text);
-  background-color: var(--ev-button-alt-bg);
+  border-color: #bfbfbf;
+  color: #1b1b1f;
+  background-color: #f8f8f8;
 }
 
 .action a:hover {
-  border-color: var(--ev-button-alt-hover-border);
-  color: var(--ev-button-alt-hover-text);
-  background-color: var(--ev-button-alt-hover-bg);
+  border-color: #bfbfbf;
+  color: #1b1b1f;
+  background-color: #e6e6e6;
 }
 
 .versions {
@@ -134,17 +134,19 @@ code {
   overflow: hidden;
   align-items: center;
   border-radius: 22px;
-  background-color: #202127;
+  background-color: #f8f8f8;
   backdrop-filter: blur(24px);
+  border: 1px solid #d9d9d9;
 }
 
 .versions li {
   display: block;
   float: left;
-  border-right: 1px solid var(--ev-c-gray-1);
+  border-right: 1px solid #bfbfbf;
   padding: 0 20px;
   font-size: 14px;
   line-height: 14px;
+  color: #1b1b1f;
   opacity: 0.8;
   &:last-child {
     border: none;

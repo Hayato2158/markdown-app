@@ -1,7 +1,7 @@
 @use '@renderer/styles/libs/functions/index' as *;
 
-$baseFontColor: p('black'); // #1f1f1f
-$baseTextColor: p('gray'); // #595959
+$baseFontColor: #1b1b1f; // 黒色
+$baseTextColor: #595959; // グレー
 
 $errTextColor: p('red'); // #de2323
 $errBgColor: p('red', 'l1'); // #fff2f0

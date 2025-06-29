@@ -8,7 +8,7 @@ body {
   font-weight: 300;
   line-height: 1.5;
   color: $baseFontColor;
-  background: #fff;
+  background: #ffffff;
   -webkit-app-region: drag; // ドラッグ可能な領域の設定 NOTE: https://www.electronjs.org/ja/docs/latest/api/frameless-window
 
   &.scroll-prevent {
