@@ -10,8 +10,6 @@ import { createNoteAtom, refreshNotesAtom } from '@renderer/store/useNotes'
 import style from '@renderer/styles/features/button/newNoteButton.module.scss'
 import newNote_icon from '@renderer/assets/newNote_icon.svg'
 
-/** types */
-import { NoteInfo } from '@renderer/contents/note'
 
 export const NewNoteButton = ({ ...props }: ActionButtonProps) => {
   const createNote = useSetAtom(createNoteAtom)

@@ -47,11 +47,10 @@ export const saveNoteAtom = atom(null, (get, set) => {
   ))
 })
 
-export const createNoteAtom = atom(null, async (get, set) => {
+export const createNoteAtom = atom(null, async (set) => {
   const response = await window.electron.createNote('新規ノート')
   if (!response.success || !response.data) return
 
-  set(refreshNotesAtom) // 一括更新で反映
 })
 
 export const deleteNoteAtom = atom(null, async (get, set) => {
@@ -70,7 +69,7 @@ export const deleteNoteAtom = atom(null, async (get, set) => {
 export const refreshNotesAtom = atom(null, async (_get, set) => {
   const refreshed = await window.electron.getNotes()
   if (refreshed.success && refreshed.data) {
-    set(notesAtom, refreshed.data)
+    set(notesAtom, refreshed.data.sort((a, b) => b.lastEditTime.getTime() - a.lastEditTime.getTime()))
     set(selectedNoteIndexAtom, 0)
     console.log('[refreshNotesAtom] refreshed:', refreshed.data.length)
   }
