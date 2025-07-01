@@ -18,7 +18,7 @@ import 'jotai-devtools/styles.css'
 /** styles */
 import styles from '@renderer/styles/pages/app.module.scss'
 
-function App(): JSX.Element {
+function App(): React.JSX.Element {
   const customStore = createStore()
   return (
     <>
