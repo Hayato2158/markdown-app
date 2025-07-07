@@ -20,7 +20,7 @@ type NoteListProps = ComponentPropsWithoutRef<'ul'> & {
 export const NoteList = ({ onSelect, ...props }: NoteListProps) => {
   const { notes, selectedIndex, handleNoteSelect } = useNotesList({ onSelect })
 
-  // console.log('[NoteList] rendering notes:', notes.length)
+  
 
   if (!notes?.length) {
     return (

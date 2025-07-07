@@ -1,12 +1,6 @@
-console.log('[DEBUG] index.ts started');
-
-
 // 環境変数の設定を最初に行う
 import dotenv from 'dotenv'
 dotenv.config({ path: '.env.main' })
-
-console.log('[DEBUG] SUPABASE_URL:', process.env.SUPABASE_URL); // ← 追加
-
 
 import { app, shell, BrowserWindow, ipcMain, crashReporter } from 'electron'
 import { autoUpdater } from 'electron-updater'
@@ -18,6 +12,8 @@ import Database from '@main/database/index'
 import './ipc/useNotes'
 import 'reflect-metadata'
 import { fetchNotesFromSupabase } from './repository/supabaseNoteRepository'
+import { syncAllLocalNotesToSupabase } from './repository/supabaseNoteRepository'
+
 
 
 /** composable */
@@ -106,7 +102,7 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
-
+  
   createWindow()
 
   app.on('activate', function () {
@@ -119,6 +115,7 @@ app.whenReady().then(() => {
 app.on('will-finish-launching', async (): Promise<void> => {
   // DB接続
   await Database.createConnection()
+  await syncAllLocalNotesToSupabase()
   
 })
 

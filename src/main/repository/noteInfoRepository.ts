@@ -1,6 +1,8 @@
 import Database from '@main/database/index'
 import { DeleteResult, UpdateResult } from 'typeorm'
 import { NoteInfoModel } from '@main/database/model/noteInfo'
+import { uploadNoteToSupabase } from './supabaseNoteRepository'
+
 
 /** types */
 import { NoteInfo } from '@main/contents/ipc'
@@ -38,7 +40,16 @@ export const writeNoteInfo = async (note: NoteInfo): Promise<UpdateResult> => {
 export const saveNoteInfo = async (noteInfo: NoteInfo): Promise<void> => {
   const connection = await Database.createConnection()
   connection.getRepository(NoteInfoModel).save(noteInfo)
+
+
+await uploadNoteToSupabase({
+  id: noteInfo.uuid,
+  title: noteInfo.title,
+  content: noteInfo.content ?? '', // ← undefinedだったら空文字にする
+  updated_at: noteInfo.lastEditTime.toISOString()
+})
 }
+
 
 export const deleteNoteInfo = async (uuid: string): Promise<DeleteResult> => {
   const connection = await Database.createConnection()
