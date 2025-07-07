@@ -1,7 +1,8 @@
 import Database from '@main/database/index'
 import { DeleteResult, UpdateResult } from 'typeorm'
 import { NoteInfoModel } from '@main/database/model/noteInfo'
-import { uploadNoteToSupabase } from './supabaseNoteRepository'
+import { uploadNoteToSupabase, deleteNoteFromSupabase } from './supabaseNoteRepository'
+
 
 
 /** types */
@@ -53,13 +54,18 @@ await uploadNoteToSupabase({
 
 export const deleteNoteInfo = async (uuid: string): Promise<DeleteResult> => {
   const connection = await Database.createConnection()
-  return connection
+
+  const result = await connection
     .getRepository(NoteInfoModel)
     .createQueryBuilder()
     .delete()
     .from(NoteInfoModel)
     .where('uuid = :id', { id: uuid })
     .execute()
+
+  await deleteNoteFromSupabase(uuid)
+
+  return result
 }
 
 export const NoteInfoRepository = {
@@ -69,3 +75,4 @@ export const NoteInfoRepository = {
   saveNoteInfo,
   deleteNoteInfo
 }
+

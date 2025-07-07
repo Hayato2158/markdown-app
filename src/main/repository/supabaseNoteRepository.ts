@@ -1,5 +1,4 @@
 import { supabase } from '../utils/supabaseClient'
-import { NoteInfo } from '@main/contents/ipc'
 import { readNotesInfo } from './noteInfoRepository'
 
 
@@ -50,4 +49,18 @@ export const syncAllLocalNotesToSupabase = async () => {
   }
 
   console.log(`[同期完了] ローカルノート ${allNotes.length} 件を Supabase にアップロードしました`)
+}
+
+export const deleteNoteFromSupabase = async (uuid: string): Promise<void> => {
+  const { error } = await supabase
+    .from('notes')
+    .delete()
+    .eq('id', uuid)
+
+  if (error) {
+    console.error('[Supabase] ノート削除失敗:', error)
+    throw error
+  }
+
+  console.log('[Supabase] ノート削除成功:', uuid)
 }
