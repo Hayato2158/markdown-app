@@ -1,45 +1,11 @@
-/** components */
-import {
-  RootLayout,
-  Sidebar,
-  Content,
-  TopBar,
-  ActionButtonsRow,
-  NoteList,
-  MarkdownEditor,
-  NoteTitle
-} from '@renderer/components/index'
+import { NoteList } from './components/features/noteList/NoteList'
 
-/** jotai DevTools */
-import { createStore, Provider } from 'jotai'
-import { DevTools } from 'jotai-devtools'
-import 'jotai-devtools/styles.css'
-
-/** styles */
-import styles from '@renderer/styles/pages/app.module.scss'
-
-function App(): React.JSX.Element {
-  const customStore = createStore()
+function App() {
   return (
-    <>
-      <Provider store={customStore}>
-        <DevTools store={customStore} />
-        <TopBar />
-        <RootLayout className={styles.wrapper}>
-          {/* sidebar */}
-          <Sidebar className={styles.sidebar}>
-            <ActionButtonsRow className={styles.button} />
-            <NoteList />
-          </Sidebar>
-
-          {/* content */}
-          <Content className={styles.content}>
-            <NoteTitle />
-            <MarkdownEditor />
-          </Content>
-        </RootLayout>
-      </Provider>
-    </>
+    <div>
+      <h1>Markdownアプリ</h1>
+      <NoteList />
+    </div>
   )
 }
 

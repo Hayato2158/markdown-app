@@ -1,25 +1,27 @@
-import { useAtom, useAtomValue } from 'jotai'
+import { useEffect, useState } from 'react'
 
-/** store */
-import { selectedNoteIndexAtom as selectedNoteIndex, notesAtom } from '@renderer/store/useNotes'
+type Note = {
+  id: number
+  title: string
+  content: string
+}
 
-export const useNotesList = ({ onSelect }: { onSelect?: () => void }) => {
-  const notes = useAtomValue(notesAtom)
-  const [selectedIndex, setSelectedNoteIndex] = useAtom(selectedNoteIndex)
+export const useNotesList = (refreshKey: number) => {
+  const [notes, setNotes] = useState<Note[]>([])
 
-  const handleNoteSelect = (index: number): void => {
-    setSelectedNoteIndex(index)
-
-    if (onSelect) {
-      onSelect()
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const res = await fetch('http://localhost:3000/api/notes')
+        const data = await res.json()
+        setNotes(data)
+      } catch (error) {
+        console.error('[fetchNotes error]', error)
+      }
     }
-  }
 
-  return {
-    notes,
-    selectedIndex,
+    fetchNotes()
+  }, [refreshKey])
 
-    /** handle */
-    handleNoteSelect
-  }
+  return notes
 }

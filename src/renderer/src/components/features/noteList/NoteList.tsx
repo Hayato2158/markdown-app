@@ -1,45 +1,24 @@
-import { ComponentPropsWithoutRef } from 'react'
+import { useState } from 'react'
+import { useNotesList } from '../../../hooks/useNotesList'
+import { NewNoteButton } from '@renderer/components/features/noteList/NewNoteButton'
 
-/** components */
-import { NotePreview } from '@renderer/components/features/noteList/NotePreview'
+export const NoteList = () => {
+  const [refreshKey, setRefreshKey] = useState(0)
+  const notes = useNotesList(refreshKey)
 
-/** styles */
-import styles from '@renderer/styles/features/noteList/NoteList.module.scss'
-
-/** hooks */
-import { useNotesList } from '@renderer/hooks/index'
-
-/** types */
-import type { NoteInfo } from '@renderer/contents/note'
-
-
-type NoteListProps = ComponentPropsWithoutRef<'ul'> & {
-  onSelect?: () => void
-}
-
-export const NoteList = ({ onSelect, ...props }: NoteListProps) => {
-  const { notes, selectedIndex, handleNoteSelect } = useNotesList({ onSelect })
-
-  
-
-  if (!notes?.length) {
-    return (
-      <ul {...props}>
-        <span>ノートがありません。</span>
-      </ul>
-    )
-  }
+  const refresh = () => setRefreshKey((k) => k + 1)
 
   return (
-    <ul {...props} className={styles.wrapper}>
-      {notes?.map((note: NoteInfo, i: number) => (
-        <NotePreview
-          key={note.uuid}
-          isActive={selectedIndex === i}
-          onClick={() => handleNoteSelect(i)}
-          {...note}
-        />
-      ))}
-    </ul>
+    <div>
+      <h2>ノート一覧</h2>
+      <NewNoteButton onCreated={refresh} />
+      <ul>
+        {notes.map((note) => (
+          <li key={note.id}>
+            <strong>{note.title}</strong>: {note.content}
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
