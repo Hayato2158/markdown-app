@@ -25,6 +25,8 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@formkit/tempo": "^0.1.2",
     "@mdxeditor/editor": "^3.37.0",
+    "@supabase/supabase-js": "^2.50.2",
+    "dotenv": "^17.0.0",
     "electron-log": "^5.4.1",
     "electron-updater": "^6.3.9",
     "jotai": "^2.12.5",

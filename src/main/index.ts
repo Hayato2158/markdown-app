@@ -1,3 +1,13 @@
+console.log('[DEBUG] index.ts started');
+
+
+// 環境変数の設定を最初に行う
+import dotenv from 'dotenv'
+dotenv.config({ path: '.env.main' })
+
+console.log('[DEBUG] SUPABASE_URL:', process.env.SUPABASE_URL); // ← 追加
+
+
 import { app, shell, BrowserWindow, ipcMain, crashReporter } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import { join } from 'path'
@@ -7,6 +17,7 @@ import { LOG_LEVEL, LOG_MESSAGE } from './contents/enum'
 import Database from '@main/database/index'
 import './ipc/useNotes'
 import 'reflect-metadata'
+import { fetchNotesFromSupabase } from './repository/supabaseNoteRepository'
 
 
 /** composable */
@@ -36,6 +47,13 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', async (): Promise<void> => {
     mainWindow.show()
+    
+    // ウィンドウが表示された後にSupabaseからノートを取得
+    try {
+      await fetchNotesFromSupabase()
+    } catch (error) {
+      console.error('Supabaseからのノート取得に失敗しました:', error)
+    }
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {

@@ -3,7 +3,7 @@ dist
 out
 .DS_Store
 *.log*
-.env
+.env*
 
 # SQLite DB
 *.sqlite

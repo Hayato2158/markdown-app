@@ -1,6 +1,10 @@
 import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
 import react from '@vitejs/plugin-react'
+import dotenv from 'dotenv'
+
+dotenv.config({ path: resolve(__dirname, '.env.main') })
+
 
 export default defineConfig({
   main: {
@@ -10,6 +14,10 @@ export default defineConfig({
         '@main': resolve('src/main'),
         '@utils': resolve('src/main/utils')
       }
+    },
+    define: {
+      'process.env.SUPABASE_URL': JSON.stringify(process.env.SUPABASE_URL),
+      'process.env.SUPABASE_KEY': JSON.stringify(process.env.SUPABASE_KEY)
     }
   },
   preload: {
