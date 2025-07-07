@@ -1,17 +1,27 @@
 import { supabase } from '../utils/supabaseClient'
 import { readNotesInfo } from './noteInfoRepository'
 
-
-// Supabase にノートをアップロード（id が同じなら更新）
 export const uploadNoteToSupabase = async (note: {
   id: string
   title: string
   content: string
   updated_at: string
 }) => {
+  const {
+    data: userData,
+    error: userError
+  } = await supabase.auth.getUser()
+
+  if (userError || !userData?.user) {
+    console.error('[Supabase] ユーザー取得エラー:', userError?.message)
+    return false
+  }
+
+  const user_id = userData.user.id
+
   const { data, error } = await supabase
     .from('notes')
-    .upsert([note], { onConflict: 'id' }) // id が一致すれば更新
+    .upsert([{ ...note, user_id }], { onConflict: 'id' }) // user_id を明示的に追加
 
   if (error) {
     console.error('[Supabase] ノートアップロード失敗:', error.message)
@@ -23,9 +33,22 @@ export const uploadNoteToSupabase = async (note: {
 }
 
 export const fetchNotesFromSupabase = async () => {
+  const {
+    data: userData,
+    error: userError
+  } = await supabase.auth.getUser()
+
+  if (userError || !userData?.user) {
+    console.error('[Supabase] ユーザー取得エラー:', userError?.message)
+    return []
+  }
+
+  const user_id = userData.user.id
+
   const { data, error } = await supabase
-    .from('notes')      // テーブル名。Supabase側で "notes" にしてある前提
-    .select('*')         // 全カラム取得
+    .from('notes')
+    .select('*')
+    .eq('user_id', user_id) // ユーザーごとのノートだけ取得
 
   if (error) {
     console.error('[Supabase] ノート取得エラー:', error.message)
@@ -52,10 +75,22 @@ export const syncAllLocalNotesToSupabase = async () => {
 }
 
 export const deleteNoteFromSupabase = async (uuid: string): Promise<void> => {
+  const {
+    data: userData,
+    error: userError
+  } = await supabase.auth.getUser()
+
+  if (userError || !userData?.user) {
+    console.error('[Supabase] ユーザー取得エラー:', userError?.message)
+    throw userError
+  }
+
+  const user_id = userData.user.id
+
   const { error } = await supabase
     .from('notes')
     .delete()
-    .eq('id', uuid)
+    .match({ id: uuid, user_id }) // 自分のノートだけ削除可
 
   if (error) {
     console.error('[Supabase] ノート削除失敗:', error)
