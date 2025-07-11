@@ -34,7 +34,7 @@ export const NoteList = ({ onSelect, ...props }: NoteListProps) => {
     <ul {...props} className={styles.wrapper}>
       {notes?.map((note: NoteInfo, i: number) => (
         <NotePreview
-          key={note.uuid}
+          key={note.uuid?.toString() ?? note.uuid ?? i}
           isActive={selectedIndex === i}
           onClick={() => handleNoteSelect(i)}
           {...note}

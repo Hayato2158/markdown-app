@@ -4,28 +4,24 @@ import { v7 as uuidv7 } from 'uuid'
 import { NoteInfo } from '@renderer/contents/note'
 
 const getNotes = async (): Promise<NoteInfo[]> => {
-  const response = await window.electron.getNotes()
-  if (response?.success && response.data) {
-    return response.data.sort((a, b) => b.lastEditTime.getTime() - a.lastEditTime.getTime())
-  }
-  return []
+  const response = await fetch('http://localhost:8000/notes')
+  if (!response.ok) return []
+
+  const data: NoteInfo[] = await response.json()
+  return data.sort((a, b) => new Date(b.lastEditTime).getTime() - new Date(a.lastEditTime).getTime())
 }
 
-const notesAtomAsync = atom<NoteInfo[] | Promise<NoteInfo[]>>(getNotes())
-export const notesAtom = unwrap(notesAtomAsync, (prev) => prev || [])
-
-export const selectedNoteIndexAtom = atom<number | null>(0)
+export const notesAtom = atom<NoteInfo[] | null>(null)
+export const selectedNoteIndexAtom = atom(0)
 
 const selectedNoteAtomAsync = atom(async (get) => {
   const notes = get(notesAtom)
   const index = get(selectedNoteIndexAtom) ?? 0
-
   if (!notes?.length) return null
 
-  const selectedNote = notes[index]
-  const response = await window.electron.readNote(selectedNote.uuid)
-
-  return (response?.success && response.data) ? response.data : selectedNote
+  const selected = notes[index]
+  const response = await fetch(`http://localhost:8000/notes/${selected.uuid}`)
+  return response.ok ? await response.json() : selected
 })
 
 export const selectedNoteAtom = unwrap(selectedNoteAtomAsync, (prev) =>
@@ -47,30 +43,44 @@ export const saveNoteAtom = atom(null, (get, set) => {
   ))
 })
 
-export const createNoteAtom = atom(null, async (set) => {
-  const response = await window.electron.createNote('新規ノート')
-  if (!response.success || !response.data) return
+export const createNoteAtom = atom(null, async (get, set) => {
+  const notes = get(notesAtom) ?? []
 
+  const res = await fetch('http://localhost:8000/notes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: '新しいノート',
+      content: '',
+      lastEditTime: new Date().toISOString()
+    })
+  })
+
+  if (!res.ok) return console.error('ノート作成失敗')
+
+  const newNote: NoteInfo = await res.json()
+  set(notesAtom, [newNote, ...notes])
+  set(selectedNoteIndexAtom, 0)
 })
 
 export const deleteNoteAtom = atom(null, async (get, set) => {
   const selectedNote = get(selectedNoteAtom)
   if (!selectedNote) return
 
-  const response = await window.electron.deleteNote(selectedNote.title, selectedNote.uuid)
-  if (!response.success) return
+  const res = await fetch(`http://localhost:8000/notes/${selectedNote.uuid}`, {
+    method: 'DELETE'
+  })
 
-  set(refreshNotesAtom) // 一括更新で反映
+  if (!res.ok) return
+  set(refreshNotesAtom)
 })
 
-/**
- * notes と selectedNoteIndex を一括更新
- */
 export const refreshNotesAtom = atom(null, async (_get, set) => {
-  const refreshed = await window.electron.getNotes()
-  if (refreshed.success && refreshed.data) {
-    set(notesAtom, refreshed.data.sort((a, b) => b.lastEditTime.getTime() - a.lastEditTime.getTime()))
-    set(selectedNoteIndexAtom, 0)
-    console.log('[refreshNotesAtom] refreshed:', refreshed.data.length)
-  }
+  const response = await fetch('http://localhost:8000/notes')
+  if (!response.ok) return
+
+  const data: NoteInfo[] = await response.json()
+  set(notesAtom, data.sort((a, b) => new Date(b.lastEditTime).getTime() - new Date(a.lastEditTime).getTime()))
+  set(selectedNoteIndexAtom, 0)
+  console.log('[refreshNotesAtom] refreshed:', data.length)
 })
