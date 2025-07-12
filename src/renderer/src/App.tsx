@@ -34,7 +34,6 @@ function App(): React.JSX.Element {
 
           {/* content */}
           <Content className={styles.content}>
-            <NoteTitle />
             <MarkdownEditor />
           </Content>
         </RootLayout>

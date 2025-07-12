@@ -10,6 +10,10 @@ import {
   thematicBreakPlugin
 } from '@mdxeditor/editor'
 
+//title
+import { NoteTitle } from '../contents/NoteTitle'
+
+
 /** hooks  */
 import { useNoteEditor } from '@renderer/hooks/index'
 import { JSX } from 'react'
@@ -25,6 +29,7 @@ export const MarkdownEditor = (): JSX.Element => {
 
   return (
     <section>
+      <NoteTitle />
       <MDXEditor
         ref={editor}
         key={selectedNote ? selectedNote.title : ''}
