@@ -11,9 +11,6 @@ import { LOG_LEVEL, LOG_MESSAGE } from './contents/enum'
 import Database from '@main/database/index'
 import './ipc/useNotes'
 import 'reflect-metadata'
-import { fetchNotesFromSupabase } from './repository/supabaseNoteRepository'
-import { syncAllLocalNotesToSupabase } from './repository/supabaseNoteRepository'
-import { signInWithEmail } from './auth/supabaseAuth'
 
 
 
@@ -46,12 +43,6 @@ function createWindow(): void {
   mainWindow.on('ready-to-show', async (): Promise<void> => {
     mainWindow.show()
     
-    // ウィンドウが表示された後にSupabaseからノートを取得
-    try {
-      await fetchNotesFromSupabase()
-    } catch (error) {
-      console.error('Supabaseからのノート取得に失敗しました:', error)
-    }
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -88,16 +79,6 @@ crashReporter.start({
 app.whenReady().then(async () => {
   await Database.createConnection()
 
-  const user = await signInWithEmail(process.env.SUPABASE_EMAIL!, process.env.SUPABASE_PASSWORD!)
-  if (user) {
-    console.log('[自動ログイン] 成功:', user.email)
-
-    // ログイン後に同期・取得を実施
-    await syncAllLocalNotesToSupabase()
-    await fetchNotesFromSupabase()
-  } else {
-    console.warn('[自動ログイン] 失敗')
-  }
 
   electronApp.setAppUserModelId('com.electron')
 
