@@ -2,8 +2,12 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useState, useEffect } from 'react'
 import { selectedNoteAtom, notesAtom, saveNoteAtom } from '@renderer/store/useNotes'
 import type { NoteInfo } from '../../features/contents/note'
+import { ComponentPropsWithoutRef } from 'react'
+import style from '@renderer/styles/features/editor/markdownEditor.module.scss'
 
-export const NoteTitle = () => {
+
+
+export const NoteTitle = ({ className, ...props}: ComponentPropsWithoutRef<'div'>) => {
   const selectedNote = useAtomValue(selectedNoteAtom)
   const [title, setTitle] = useState('')
   const [notes, setNotes] = useAtom(notesAtom)
@@ -59,7 +63,7 @@ export const NoteTitle = () => {
 
   return (
     <input
-      className="note-title-input"
+      className={style.noteTitle}
       value={title}
       onChange={(e) => setTitle(e.target.value)}
       onBlur={handleBlur}
