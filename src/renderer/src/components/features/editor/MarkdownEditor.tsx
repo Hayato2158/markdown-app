@@ -1,5 +1,7 @@
 /**CSS */
 import styles from '@renderer/styles/features/editor/markdownEditor.module.scss'
+import '@mdxeditor/editor/style.css'
+
 
 /** Markdown */
 import {
@@ -10,6 +12,7 @@ import {
   quotePlugin,
   thematicBreakPlugin
 } from '@mdxeditor/editor'
+
 
 /** title */
 import { NoteTitle } from '../contents/NoteTitle'
@@ -33,8 +36,8 @@ export const MarkdownEditor = (): JSX.Element => {
       <NoteTitle className = {styles.noteTitle} />
       <MDXEditor
         ref={editor}
-        key={selectedNote ? selectedNote.title : ''}
-        markdown={selectedNote?.content ? selectedNote.content : ''}
+        key={selectedNote?.uuid}
+        markdown={selectedNote?.content ?? ''}
         onChange={onChange}
         onBlur={handleBlur}
         contentEditableClassName={styles.wrapper}
@@ -42,8 +45,8 @@ export const MarkdownEditor = (): JSX.Element => {
           headingsPlugin(),
           listsPlugin(),
           quotePlugin(),
+          thematicBreakPlugin(),
           markdownShortcutPlugin(),
-          thematicBreakPlugin()
         ]}
       />
     </section>
